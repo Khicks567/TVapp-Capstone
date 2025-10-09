@@ -24,8 +24,22 @@ export async function GET(request: NextRequest) {
       data: user.notifications,
       success: true,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching notifications:", error);
+
+    if (
+      error instanceof Error &&
+      (error.message.includes("token") ||
+        error.message.includes("Unauthorized"))
+    ) {
+      return NextResponse.json(
+        {
+          error: "Authentication failed. Please log in.",
+        },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json(
       {
         error: "Failed to fetch notifications list.",

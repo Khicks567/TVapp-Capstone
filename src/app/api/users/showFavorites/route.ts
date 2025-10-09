@@ -25,11 +25,17 @@ export async function GET(request: NextRequest) {
         favoriteTvShows: user.favoriteTvShows,
       },
     });
-  } catch (error: any) {
-    console.error("Error fetching favorites:", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
 
-    if (error.message.includes("token")) {
-      return NextResponse.json({ error: error.message }, { status: 401 });
+    console.error("Error fetching favorites:", errorMessage);
+
+    if (
+      errorMessage.includes("token") ||
+      errorMessage.includes("Unauthorized")
+    ) {
+      return NextResponse.json({ error: errorMessage }, { status: 401 });
     }
 
     return NextResponse.json(

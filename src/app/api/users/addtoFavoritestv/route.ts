@@ -6,6 +6,10 @@ import jwt from "jsonwebtoken";
 const TOKEN_NAME = "token";
 const JWT_SECRET = process.env.JWTSECRET || "";
 
+interface JwtPayload {
+  id: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
     await Database();
@@ -18,7 +22,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const decodedToken: any = jwt.verify(token, JWT_SECRET);
+    const decodedToken = jwt.verify(token, JWT_SECRET) as JwtPayload;
     const userId = decodedToken.id;
 
     const { showId, type } = await request.json();
@@ -51,8 +55,13 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    if (error.name === "JsonWebTokenError") {
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "name" in error &&
+      error.name === "JsonWebTokenError"
+    ) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
     console.error("API Error:", error);

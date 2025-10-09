@@ -8,6 +8,18 @@ import mongoose from "mongoose";
 
 Database();
 
+interface NextEpisode {
+  air_date: string;
+  [key: string]: any;
+}
+
+interface ShowDetails {
+  name: string;
+  status: "Canceled" | "Ended" | "Returning Series" | string;
+  next_episode_to_air: NextEpisode | null;
+  [key: string]: any;
+}
+
 export async function POST(request: NextRequest) {
   let showName: string = "";
 
@@ -38,15 +50,15 @@ export async function POST(request: NextRequest) {
       throw new Error("TMDB API key is not configured.");
     }
 
-    let nextEpisode: any = null;
-    let showDetails: any = null;
+    let nextEpisode: NextEpisode | null = null;
+    let showDetails: ShowDetails | null = null;
 
     try {
       const tmdbResponse = await axios.get(
         `https://api.themoviedb.org/3/tv/${tvShowId}?language=en-US&api_key=${TMDB_API_KEY}`
       );
 
-      showDetails = tmdbResponse.data;
+      showDetails = tmdbResponse.data as ShowDetails;
 
       if (
         showDetails.name &&
@@ -56,10 +68,11 @@ export async function POST(request: NextRequest) {
         showName = showDetails.name;
       }
       nextEpisode = showDetails.next_episode_to_air;
-    } catch (tmdbError: any) {
+    } catch (tmdbError) {
+      const error = tmdbError as any;
       console.error(
         `TMDB request failed for ID ${tvShowId} (Status: ${
-          tmdbError.response?.status || "Network Error"
+          error.response?.status || "Network Error"
         }). Aborting subscription.`
       );
       return NextResponse.json(
@@ -72,7 +85,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (showName.length === 0) {
+    if (!showDetails || showName.length === 0) {
       console.error(
         `TMDB returned data for ID ${tvShowId} but missing or empty 'name' field.`
       );
@@ -99,7 +112,7 @@ export async function POST(request: NextRequest) {
     const newNotificationDate = nextEpisode?.air_date || "N/A";
 
     const alreadySubscribed = user.notifications.some(
-      (n: any) =>
+      (n: { id: string; notificationDate: string }) =>
         n.id === String(tvShowId) && n.notificationDate === newNotificationDate
     );
 
@@ -161,13 +174,14 @@ export async function POST(request: NextRequest) {
       emailSent: emailSent,
       success: true,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Notification subscription error (Outer Catch):", error);
+    const err = error as any;
 
     if (
-      error instanceof mongoose.Error.ValidationError ||
-      (error.name === "ValidationError" &&
-        error.message.includes("showName is required"))
+      err instanceof mongoose.Error.ValidationError ||
+      (err.name === "ValidationError" &&
+        err.message.includes("showName is required"))
     ) {
       console.error(
         "Mongoose Validation Failed: **CRITICAL: Please ensure you have removed the 'showName' field from your NotificationSchema in models/users.ts.**"
@@ -182,10 +196,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (
-      error.message.includes("Unauthorized") ||
-      error.message.includes("Token")
-    ) {
+    if (err.message.includes("Unauthorized") || err.message.includes("Token")) {
       return NextResponse.json(
         {
           message: "Authentication failed. Please log in again.",

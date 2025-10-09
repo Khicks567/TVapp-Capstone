@@ -9,8 +9,14 @@ export async function DELETE(request: NextRequest) {
 
   try {
     userId = getUserIdFromToken(request);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 401 });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 401 });
+    }
+    return NextResponse.json(
+      { error: "Authentication error." },
+      { status: 401 }
+    );
   }
 
   let showId: string;

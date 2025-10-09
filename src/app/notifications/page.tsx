@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/nav";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Clock, Trash2 } from "lucide-react";
@@ -11,6 +11,10 @@ interface Notification {
   id: string;
   dateCreated: string;
   notificationDate: string;
+}
+
+interface ApiErrorResponse {
+  error: string;
 }
 
 export default function NotificationsPage() {
@@ -47,9 +51,16 @@ export default function NotificationsPage() {
           new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
       );
       setNotifications(sortedNotifications);
-    } catch (err: any) {
-      console.error("Fetch error:", err.response?.data?.error || err.message);
-      setError("Failed to load notifications. Are you logged in?");
+    } catch (err) {
+      let errorMessage = "Failed to load notifications. Are you logged in?";
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<ApiErrorResponse>;
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        }
+      }
+      console.error("Fetch error:", errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -97,7 +108,7 @@ export default function NotificationsPage() {
     };
 
     fetchShowNames();
-  }, [notifications, loading, error]);
+  }, [notifications, loading, error, showNamesMap]);
 
   const handleDeleteNotification = async (showId: string) => {
     setDeletingId(showId);
@@ -111,7 +122,15 @@ export default function NotificationsPage() {
       setNotifications((prev) => prev.filter((notif) => notif.id !== showId));
 
       console.log(`Notification for show ID ${showId} deleted successfully.`);
-    } catch (err: any) {
+    } catch (err) {
+      let errorMessage = "Failed to delete notification.";
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<ApiErrorResponse>;
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        }
+      }
+      console.log(errorMessage);
     } finally {
       setDeletingId(null);
     }
@@ -153,7 +172,7 @@ export default function NotificationsPage() {
             <Clock className="w-12 h-12 mx-auto text-yellow-500 mb-4" />
 
             <p className="default">
-              You haven't set up any episode notifications yet.
+              You haven&apos;t set up any episode notifications yet.
             </p>
 
             <p className="default">

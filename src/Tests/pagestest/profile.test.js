@@ -214,7 +214,7 @@ function ProfilePage() {
         <h2 className="text-2xl font-semibold mb-4">Favorite Movies 🎬</h2>
         {favorites?.favoriteMovies.length === 0 ? (
           <p className="text-gray-500">
-            You haven't added any favorite movies yet.
+            You haven&apos;t added any favorite movies yet.
           </p>
         ) : loadingMovieDetails ? (
           <p>Loading movie details...</p>
@@ -262,7 +262,7 @@ function ProfilePage() {
         <h2 className="text-2xl font-semibold mb-4">Favorite TV Shows 📺</h2>
         {favorites?.favoriteTvShows.length === 0 ? (
           <p className="text-gray-500">
-            You haven't added any favorite TV shows yet.
+            You haven&apos;t added any favorite TV shows yet.
           </p>
         ) : loadingTvDetails ? (
           <p>Loading TV show details...</p>

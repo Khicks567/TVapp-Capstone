@@ -95,7 +95,7 @@ function NotificationsPage() {
     };
 
     fetchShowNames();
-  }, [notifications, loading, error]);
+  }, [notifications, loading, error, showNamesMap]);
 
   const handleDeleteNotification = async (showId) => {
     setDeletingId(showId);
@@ -109,7 +109,7 @@ function NotificationsPage() {
       setNotifications((prev) => prev.filter((notif) => notif.id !== showId));
 
       console.log(`Notification for show ID ${showId} deleted successfully.`);
-    } catch (err) {
+    } catch (_err) {
       // ... error handling
     } finally {
       setDeletingId(null);
@@ -119,14 +119,12 @@ function NotificationsPage() {
   if (loading || (notifications.length > 0 && isNamesLoading)) {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-6">
-                <Navbar />       
-        <h1 className="text-3xl font-bold mb-8 mt-4">Notifications</h1>       
+        <Navbar />
+        <h1 className="text-3xl font-bold mb-8 mt-4">Notifications</h1>
         <p>
-                   
           {loading
             ? "Loading user notifications..."
             : "Fetching TV show details..."}
-                 
         </p>
       </div>
     );
@@ -135,85 +133,70 @@ function NotificationsPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-6">
-                <Navbar />       {" "}
-        <h1 className="text-3xl font-bold mb-8 mt-4">Notifications</h1>       
-        <p className="text-red-400">{error}</p>       
+        <Navbar />
+        <h1 className="text-3xl font-bold mb-8 mt-4">Notifications</h1>
+        <p className="text-red-400">{error}</p>
       </div>
     );
   }
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 font-sans">
-            <Navbar />     
+      <Navbar />
       <h1 className="text-4xl font-extrabold mb-8 text-indigo-400">
-                Episode Reminders      
+        Episode Reminders
       </h1>
-           
+
       {notifications.length === 0 ? (
         <div className="text-center p-12 bg-gray-800 rounded-xl shadow-xl">
-                    <Clock className="w-12 h-12 mx-auto text-yellow-500 mb-4" />
-                   
+          <Clock className="w-12 h-12 mx-auto text-yellow-500 mb-4" />
+
           <p className="text-lg">
-                        You haven't set up any episode notifications yet.      
-               
+            You haven&apos;t set up any episode notifications yet.
           </p>
-                   
+
           <p className="text-gray-400 mt-2">
-                        Go back to your favorite TV shows to set a reminder!    
-                 
+            Go back to your favorite TV shows to set a reminder!
           </p>
-                 
         </div>
       ) : (
         <div className="space-y-4">
-                   
           {notifications.map((notif) => (
             <div
               key={notif.dateCreated}
               className="bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-700 hover:border-indigo-500 transition-all"
             >
-                           
               <div className="flex justify-between items-start mb-2">
-                               
                 <h3 className="text-xl font-bold text-indigo-300">
-                                    {showNamesMap[notif.id] || notif.id}       
-                         
+                  {showNamesMap[notif.id] || notif.id}
                 </h3>
-                             
               </div>
-                           
+
               <p className="text-sm text-gray-400 mt-3">
-                               
-                <strong className="text-gray-200">Scheduled Air Date:</strong> 
-                             
+                <strong className="text-gray-200">Scheduled Air Date:</strong>
+
                 <span className="ml-2">
-                                    {formatAirDate(notif.notificationDate)}     
-                           
+                  {formatAirDate(notif.notificationDate)}
                 </span>
-                             
               </p>
-                           
+
               <p className="text-xs text-gray-500 mt-1">
-                               
                 <strong className="text-gray-400">
-                                    Notification Created Date:                
+                  Notification Created Date:
                 </strong>
-                               
+
                 <span className="ml-2">
-                                    {format(new Date(notif.dateCreated), "PPP")}
-                                 
+                  {format(new Date(notif.dateCreated), "PPP")}
                 </span>
-                             
               </p>
-                           
+
               <div className="mt-4 pt-3 border-t border-gray-700 flex justify-between items-center">
-                               
                 <Link
                   href={`/info/${notif.id}`}
                   className="text-sm text-indigo-400 hover:text-indigo-200 transition-colors font-medium"
                 >
-                                    View Show Details &rarr;                
+                  View Show Details &rarr;
                 </Link>
-                               
+
                 <button
                   onClick={() => handleDeleteNotification(notif.id)}
                   disabled={deletingId === notif.id}
@@ -223,17 +206,12 @@ function NotificationsPage() {
                       : ""
                   }`}
                 >
-                                    <Trash2 className="w-4 h-4 mr-1" />         
-                         
-                  {deletingId === notif.id ? "Deleting..." : "Delete Reminder"} 
-                               
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  {deletingId === notif.id ? "Deleting..." : "Delete Reminder"}
                 </button>
-                             
               </div>
-                         
             </div>
           ))}
-                 
         </div>
       )}
     </div>

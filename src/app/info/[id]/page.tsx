@@ -7,9 +7,9 @@ import { Database } from "@/dbconfig/database";
 import User from "@/models/users";
 import Notificationbutton from "@/helpers/notificationsbutton";
 import Backbutton from "@/app/components/backbutton";
+import Image from "next/image";
 
-// TYPE DEFINITIONS
-
+// interface
 interface InfoPageProps {
   params: {
     id: string;
@@ -101,7 +101,6 @@ export default async function InfoPage({ params }: InfoPageProps) {
 
   const show = response.data;
 
-  // Data Formatting
   const tagline = show.tagline || "N/A";
   const firstAirDate = show.first_air_date || "N/A";
   const lastAirDate = show.last_air_date || "N/A";
@@ -113,6 +112,9 @@ export default async function InfoPage({ params }: InfoPageProps) {
     show.created_by.length > 0
       ? show.created_by.map((creator) => creator.name).join(", ")
       : "N/A";
+  const posterUrl: string = show.poster_path
+    ? `https://image.tmdb.org/t/p/w500${show.poster_path}`
+    : "";
 
   const nextEpisodeInfo = show.next_episode_to_air
     ? `${show.next_episode_to_air.name} (Air Date: ${
@@ -128,11 +130,19 @@ export default async function InfoPage({ params }: InfoPageProps) {
         <Backbutton />
         <section className="h1wrap">
           <h1 className="profileh1">Show Details</h1>
-          <img
-            src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
-            alt={show.name ? `${show.name} Poster` : "No picture Available"}
-            className="idimg"
-          />
+
+          {posterUrl ? (
+            <div className="idimg-container">
+              <Image
+                src={posterUrl}
+                alt={show.name ? `${show.name} Poster` : "No picture Available"}
+                className="idimg"
+              />
+            </div>
+          ) : (
+            <div className="idimg-placeholder">No picture Available</div>
+          )}
+
           <section>
             <FavoriteButton
               showId={showIdString}

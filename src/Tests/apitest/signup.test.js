@@ -90,7 +90,6 @@ async function POST(req) {
 
 describe("POST /api/users/signup", () => {
   const createMockRequest = (body) => {
-    // @ts-ignore
     return new NextRequest(body);
   };
 

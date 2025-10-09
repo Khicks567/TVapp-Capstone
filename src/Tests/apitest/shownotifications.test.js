@@ -62,6 +62,7 @@ async function GET(request) {
       success: true,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         error: "Failed to fetch notifications list.",

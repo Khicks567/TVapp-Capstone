@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import JWT, { JwtPayload } from "jsonwebtoken";
 
@@ -22,7 +22,7 @@ const verifyToken = (token: string): JwtPayload | null => {
   }
 };
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const cookieStore = await cookies();
 
   const tokenCookie = cookieStore.get(AUTH_COOKIE_NAME);

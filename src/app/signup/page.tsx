@@ -3,13 +3,16 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Siginup() {
+// Interface for API error response to improve type safety
+interface ApiErrorResponse {
+  error: string;
+}
+
+export default function Signup() {
   const router = useRouter();
   const [user, setUser] = React.useState({
     email: "",
@@ -54,9 +57,16 @@ export default function Siginup() {
       setTimeout(() => {
         router.push("/login");
       }, 1000);
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.error || "An unknown error occurred.";
+    } catch (error) {
+      // FIX: Replace 'any' with type-safe AxiosError handling
+      let errorMessage = "An unknown error occurred.";
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ApiErrorResponse>;
+        errorMessage =
+          axiosError.response?.data?.error ||
+          axiosError.message ||
+          errorMessage;
+      }
 
       toast.update(loadingToastId, {
         render: errorMessage,

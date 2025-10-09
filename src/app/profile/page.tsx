@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Navbar from "../components/nav";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import handleNotificationSignup from "@/helpers/makenotifications";
+import Image from "next/image";
 
-// Interface
 interface MediaDetail {
   id: number;
   title?: string;
@@ -18,6 +18,10 @@ interface MediaDetail {
 interface UserFavorites {
   favoriteMovies: number[];
   favoriteTvShows: number[];
+}
+
+interface ApiErrorResponse {
+  error: string;
 }
 
 const POPUP_SEEN_KEY = "profile_welcome_popup_seen";
@@ -40,9 +44,14 @@ export default function ProfilePage() {
       try {
         const response = await axios.get("/api/users/showFavorites");
         setFavorites(response.data.data);
-      } catch (err: any) {
-        console.error("Fetch error:", err.response?.data?.error || err.message);
-        setError("Failed to load user favorites. Please log in.");
+      } catch (err) {
+        let errorMessage = "Failed to load user favorites. Please log in.";
+        if (axios.isAxiosError(err)) {
+          const axiosError = err as AxiosError<ApiErrorResponse>;
+          errorMessage = axiosError.response?.data?.error || err.message;
+        }
+        console.error("Fetch error:", errorMessage);
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -67,7 +76,8 @@ export default function ProfilePage() {
               to view and manage them.
             </p>
             <p>
-              Click on See Your Notifications to see the alerts you've set up.
+              Click on See Your Notifications to see the alerts you&apos;ve set
+              up.
             </p>
           </div>,
           {
@@ -251,7 +261,7 @@ export default function ProfilePage() {
           </span>
           {favorites?.favoriteMovies.length === 0 ? (
             <p className="default">
-              You haven't added any favorite movies yet.
+              You haven&apos;t added any favorite movies yet.
             </p>
           ) : loadingMovieDetails ? (
             <p>Loading movie details...</p>
@@ -261,10 +271,12 @@ export default function ProfilePage() {
                 <div key={movie.id} className="eachitem">
                   {movie.poster_path ? (
                     <Link href={`/info/movie/${movie.id}`}>
-                      <img
+                      <Image
                         src={`${imageBaseUrl}${movie.poster_path}`}
                         alt={movie.title || "Movie Poster"}
                         className="contentimg"
+                        width={200}
+                        height={300}
                       />
                     </Link>
                   ) : (
@@ -291,7 +303,7 @@ export default function ProfilePage() {
           </span>
           {favorites?.favoriteTvShows.length === 0 ? (
             <p className="default">
-              You haven't added any favorite TV shows yet.
+              You haven&apos;t added any favorite TV shows yet.
             </p>
           ) : loadingTvDetails ? (
             <p>Loading TV show details...</p>
@@ -301,7 +313,7 @@ export default function ProfilePage() {
                 <div key={show.id} className="eachitem">
                   {show.poster_path ? (
                     <Link href={`/info/${show.id}`}>
-                      <img
+                      <Image
                         src={`${imageBaseUrl}${show.poster_path}`}
                         alt={show.name || "TV Show Poster"}
                         className="contentimg"

@@ -1,15 +1,17 @@
 import React from "react";
-import { NextPage } from "next";
+import Link from "next/link";
 
-const Custom404: NextPage = () => {
+const Custom404 = () => {
   return (
     <div className="main404">
       <h1 className="h1404">404 - Page Not Found</h1>
-      <p className="p404">Oops! The page you are looking for doesn't exist.</p>
+      <p className="p404">
+        Oops! The page you are looking for doesn&apos;t exist.
+      </p>
 
-      <a className="link404" href="/profile">
+      <Link className="link404" href="/profile">
         Go back homepage
-      </a>
+      </Link>
     </div>
   );
 };

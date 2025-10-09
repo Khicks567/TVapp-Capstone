@@ -6,6 +6,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { Database } from "@/dbconfig/database";
 import User from "@/models/users";
 import Backbutton from "@/app/components/backbutton";
+import Image from "next/image";
 
 interface InfoPageProps {
   params: {
@@ -118,11 +119,21 @@ export default async function InfoPageMovie({ params }: InfoPageProps) {
         <Backbutton />
         <section className="h1wrap">
           <h1 className="profileh1">Movie Details</h1>
-          <img
-            src={posterUrl || undefined}
-            alt={movie.title ? `${movie.title} Poster` : "No picture Available"}
-            className="idimg"
-          />
+
+          {posterUrl ? (
+            <div className="idimg-container">
+              <Image
+                src={posterUrl}
+                alt={
+                  movie.title ? `${movie.title} Poster` : "No picture Available"
+                }
+                className="idimg"
+              />
+            </div>
+          ) : (
+            <div className="idimg-placeholder">No picture Available</div>
+          )}
+
           <FavoriteButtonMovie
             movieId={movieIdString}
             isFavoritedInitial={isFavorited}

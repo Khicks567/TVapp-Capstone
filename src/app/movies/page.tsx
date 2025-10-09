@@ -5,8 +5,9 @@ import axios from "axios";
 import Navbar from "@/app/components/nav";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { toast } from "react-toastify";
 
-//INTERFACE
 interface MovieResult {
   id: number;
   title: string;
@@ -65,7 +66,7 @@ export default function Moviesearch() {
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     if (!inputValue) {
-      alert("Please enter a Movie name.");
+      toast.error("Please enter a Movie name.");
       return;
     }
 
@@ -86,11 +87,16 @@ export default function Moviesearch() {
         >
           <div className="eachitem">
             {item.poster_path ? (
-              <img
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-                className="contentimg"
-              />
+              <div
+                className="relative w-full overflow-hidden rounded-lg"
+                style={{ height: "450px" }}
+              >
+                <Image
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="contentimg"
+                />
+              </div>
             ) : (
               <p className="default">No Image Available</p>
             )}

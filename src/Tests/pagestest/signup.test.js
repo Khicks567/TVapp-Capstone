@@ -12,7 +12,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("next/link", () => {
-  return ({ children, href }) => {
+  return function MockLink({ children, href }) {
     return <a href={href}>{children}</a>;
   };
 });

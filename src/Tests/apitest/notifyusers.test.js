@@ -4,10 +4,6 @@ import mongoose from "mongoose";
 
 // Mock
 
-const mockNextResponse = {
-  json: vi.fn((data, options) => ({ data, options, json: true })),
-};
-
 vi.mock("next/server", () => ({
   NextResponse: {
     json: vi.fn((data, options) => ({ data, options, json: true })),

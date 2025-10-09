@@ -3,9 +3,13 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+interface ApiErrorResponse {
+  error: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,7 +18,7 @@ export default function LoginPage() {
     password: "",
   });
 
-  const [buttonOff, setbuttonOff] = React.useState(false);
+  const [buttonOff, setbuttonOff] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
 
   const signIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,10 +50,15 @@ export default function LoginPage() {
       setTimeout(() => {
         router.push("/profile");
       }, 1000);
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.error ||
-        "Login failed. Please check your credentials.";
+    } catch (error) {
+      let errorMessage = "Login failed. Please check your credentials.";
+
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ApiErrorResponse>;
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        }
+      }
 
       toast.update(loadingToastId, {
         render: errorMessage,

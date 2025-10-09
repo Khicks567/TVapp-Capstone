@@ -1,18 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import JWT from "jsonwebtoken";
 
-const getUserIdFromToken = (request: NextRequest) => {
-  const token = request.cookies.get("token")?.value || "";
+interface JwtPayload {
+  id: string;
+}
 
-  if (!token || !process.env.JWTSECRET) {
-    throw new Error("Unauthorized");
+const getUserIdFromToken = (request: NextRequest): string => {
+  const token = request.cookies.get("token")?.value || "";
+  const jwtSecret = process.env.JWTSECRET;
+
+  if (!token || !jwtSecret) {
+    throw new Error("Unauthorized: Missing token or secret.");
   }
 
   try {
-    const decodedToken: any = JWT.verify(token, process.env.JWTSECRET!);
+    const decodedToken = JWT.verify(token, jwtSecret) as JwtPayload;
     return decodedToken.id;
-  } catch (error) {
-    throw new Error("Invalid or expired token");
+  } catch (error: unknown) {
+    console.log(error);
+    throw new Error("Invalid or expired token.");
   }
 };
 

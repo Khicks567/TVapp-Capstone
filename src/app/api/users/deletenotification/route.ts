@@ -31,6 +31,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
   } catch (e) {
+    console.log(e);
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 

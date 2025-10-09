@@ -10,14 +10,21 @@ Database();
 
 interface NextEpisode {
   air_date: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface ShowDetails {
   name: string;
   status: "Canceled" | "Ended" | "Returning Series" | string;
   next_episode_to_air: NextEpisode | null;
-  [key: string]: any;
+  [key: string]: unknown;
+}
+
+interface CustomAxiosError extends Error {
+  response?: {
+    status?: number;
+    data: unknown;
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -69,7 +76,7 @@ export async function POST(request: NextRequest) {
       }
       nextEpisode = showDetails.next_episode_to_air;
     } catch (tmdbError) {
-      const error = tmdbError as any;
+      const error = tmdbError as CustomAxiosError;
       console.error(
         `TMDB request failed for ID ${tvShowId} (Status: ${
           error.response?.status || "Network Error"
@@ -176,7 +183,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Notification subscription error (Outer Catch):", error);
-    const err = error as any;
+    const err = error as Error;
 
     if (
       err instanceof mongoose.Error.ValidationError ||

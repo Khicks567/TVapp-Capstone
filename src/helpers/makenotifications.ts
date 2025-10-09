@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 const handleNotificationSignup = async (tvShowId: number) => {
@@ -14,10 +14,11 @@ const handleNotificationSignup = async (tvShowId: number) => {
     } else {
       toast.info(message);
     }
-  } catch (err: any) {
-    console.error("Failed to sign up for notification:", err);
+  } catch (err) {
+    const error = err as AxiosError<{ message?: string }>;
+    console.error("Failed to sign up for notification:", error);
     const errorMessage =
-      err.response?.data?.message ||
+      error.response?.data?.message ||
       "Error: Could not set up notification. Please log in or try again.";
 
     if (errorMessage.includes("already subscribed")) {

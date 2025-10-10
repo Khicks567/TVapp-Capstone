@@ -7,7 +7,6 @@ import { Database } from "@/dbconfig/database";
 import User from "@/models/users";
 import Notificationbutton from "@/helpers/notificationsbutton";
 import Backbutton from "@/app/components/backbutton";
-import Image from "next/image";
 
 // interface
 interface InfoPageProps {
@@ -133,7 +132,7 @@ export default async function InfoPage({ params }: InfoPageProps) {
 
           {posterUrl ? (
             <div className="idimg-container">
-              <Image
+              <img
                 src={posterUrl}
                 alt={show.name ? `${show.name} Poster` : "No picture Available"}
                 className="idimg"

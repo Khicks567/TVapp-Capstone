@@ -6,7 +6,6 @@ import Navbar from "../components/nav";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import handleNotificationSignup from "@/helpers/makenotifications";
-import Image from "next/image";
 
 interface MediaDetail {
   id: number;
@@ -271,12 +270,10 @@ export default function ProfilePage() {
                 <div key={movie.id} className="eachitem">
                   {movie.poster_path ? (
                     <Link href={`/info/movie/${movie.id}`}>
-                      <Image
+                      <img
                         src={`${imageBaseUrl}${movie.poster_path}`}
                         alt={movie.title || "Movie Poster"}
                         className="contentimg"
-                        width={200}
-                        height={300}
                       />
                     </Link>
                   ) : (
@@ -313,7 +310,7 @@ export default function ProfilePage() {
                 <div key={show.id} className="eachitem">
                   {show.poster_path ? (
                     <Link href={`/info/${show.id}`}>
-                      <Image
+                      <img
                         src={`${imageBaseUrl}${show.poster_path}`}
                         alt={show.name || "TV Show Poster"}
                         className="contentimg"

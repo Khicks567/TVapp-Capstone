@@ -87,13 +87,10 @@ export default function NotificationsPage() {
       }
 
       const namePromises = uniqueShowIds.map(async (id) => {
-        if (showNamesMap[id]) return;
-
         try {
           const response = await axios.get(
             `https://api.themoviedb.org/3/tv/${id}?language=en-US&api_key=${TMDB_API_KEY}`
           );
-
           newNames[id] = response.data.name || "Unknown Show";
         } catch (e) {
           console.error(`Failed to fetch name for show ID ${id}`, e);
@@ -103,12 +100,28 @@ export default function NotificationsPage() {
 
       await Promise.all(namePromises);
 
-      setShowNamesMap((prev) => ({ ...prev, ...newNames }));
+      setShowNamesMap((prev) => {
+        const namesToUpdate: Record<string, string> = {};
+        let hasNewNames = false;
+
+        for (const [id, name] of Object.entries(newNames)) {
+          if (!prev[id] || prev[id] === id) {
+            namesToUpdate[id] = name;
+            hasNewNames = true;
+          }
+        }
+
+        if (hasNewNames) {
+          return { ...prev, ...namesToUpdate };
+        }
+        return prev;
+      });
+
       setIsNamesLoading(false);
     };
 
     fetchShowNames();
-  }, [notifications, loading, error, showNamesMap]);
+  }, [notifications, loading, error]);
 
   const handleDeleteNotification = async (showId: string) => {
     setDeletingId(showId);
@@ -140,7 +153,7 @@ export default function NotificationsPage() {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-6">
         <Navbar />
-        <h1 className="text-3xl font-bold mb-8 mt-4">Notifications</h1>
+        <h1>Notifications</h1>
         <p>
           {loading
             ? "Loading user notifications..."

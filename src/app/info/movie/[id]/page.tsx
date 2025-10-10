@@ -122,7 +122,7 @@ export default async function InfoPageMovie({ params }: InfoPageProps) {
 
           {posterUrl ? (
             <div className="idimg-container">
-              <Image
+              <img
                 src={posterUrl}
                 alt={
                   movie.title ? `${movie.title} Poster` : "No picture Available"

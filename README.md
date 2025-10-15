@@ -1,36 +1,23 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+📺 KTHP TV Tracker App
+Track, manage, and never miss an episode of your favorite TV shows and movies!
 
-First, run the development server:
+✨ Key Features
+The KTHP TV Tracker is a comprehensive application designed to help users manage their media consumption and stay up-to-date with their favorite content.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+User Profiles: Create a personal profile to manage your viewing preferences and tracking data.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Favorites List Management: Easily add, manage, and update a consolidated list of your favorite TV shows and movies.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Personalized Notifications: Set up email notifications to receive alerts for upcoming episodes of the shows you follow.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Data Management: Full control to modify and update your favorites list and notification settings at any time.
 
-## Learn More
+🚀 Usage
+Create an Account: Navigate to the registration page and create your profile.
 
-To learn more about Next.js, take a look at the following resources:
+Search and Add: Use the search feature to find your favorite TV shows and movies. Click the "Add to Favorites" button.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Manage Notifications: Visit your profile settings to enable email notifications for any show in your favorites list.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Stay Updated: Receive timely emails about new episodes and use the application's dashboard to manage your watching progress.

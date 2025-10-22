@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
     const { email, password } = reqBody;
 
-    console.log(reqBody);
+
 
     const user = await User.findOne({ email }).select("+password");
 
